@@ -15,10 +15,8 @@ type Kmp struct {
 
 /* You can define a dbKey to compile strings into a specified db */
 func (kmp *Kmp) AddStringsToDb(strs []string, dbKey string) {
-	var key string
-
 	if dbKey == "" {
-		key = "default"
+		dbKey = "default"
 	}
 	if kmp.Db == nil {
 		kmp.Db = make(map[string][]pattern)
@@ -26,7 +24,7 @@ func (kmp *Kmp) AddStringsToDb(strs []string, dbKey string) {
 
 	for _, str := range strs {
 		hasAdded := false
-		for _, addedPattern := range kmp.Db[key] {
+		for _, addedPattern := range kmp.Db[dbKey] {
 			if addedPattern.str == str {
 				hasAdded = true
 				break
@@ -38,7 +36,7 @@ func (kmp *Kmp) AddStringsToDb(strs []string, dbKey string) {
 
 		var pat pattern
 		pat.str = str
-		kmp.Db[key] = append(kmp.Db[key], pat)
+		kmp.Db[dbKey] = append(kmp.Db[dbKey], pat)
 	}
 
 	return
