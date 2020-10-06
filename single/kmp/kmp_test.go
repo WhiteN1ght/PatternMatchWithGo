@@ -1,7 +1,10 @@
 package kmp
 
-import "fmt"
+import "testing"
 
-func main() {
-	fmt.Println("aaaa")
+func TestKmp(t *testing.T) {
+	var test Kmp
+	strs := []string{"http", "com"}
+	test.AddStringsToDb(strs, "url")
+	test.Show()
 }

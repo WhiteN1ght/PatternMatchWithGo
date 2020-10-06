@@ -26,7 +26,7 @@ func (kmp *Kmp) AddStringsToDb(strs []string, dbKey string) {
 
 	for _, str := range strs {
 		hasAdded := false
-		for _, addedPattern := range kmp.Db["key"] {
+		for _, addedPattern := range kmp.Db[key] {
 			if addedPattern.str == str {
 				hasAdded = true
 				break
@@ -38,7 +38,7 @@ func (kmp *Kmp) AddStringsToDb(strs []string, dbKey string) {
 
 		var pat pattern
 		pat.str = str
-		kmp.Db[key] = append(kmp.Db["key"], pat)
+		kmp.Db[key] = append(kmp.Db[key], pat)
 	}
 
 	return
