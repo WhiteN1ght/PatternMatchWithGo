@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	kmp.Speak()
+	return
 }

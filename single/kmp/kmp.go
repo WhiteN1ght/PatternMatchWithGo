@@ -1,55 +1,69 @@
 package kmp
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 )
 
-type pattern struct {
-	str  string
-	next []int
-}
-
 type Kmp struct {
-	Db map[string][]pattern
+	pattern     string
+	patternLen  int
+	next        []int
+	nocaseMatch bool
 }
 
-/* You can define a dbKey to compile strings into a specified db */
-func (kmp *Kmp) AddStringsToDb(strs []string, dbKey string) {
-	if dbKey == "" {
-		dbKey = "default"
+func Init(pattern string, nocaseMatch ...bool) (*Kmp, error) {
+	var nocase bool
+	if pattern == "" {
+		return nil, errors.New("Can't match null string")
 	}
-	if kmp.Db == nil {
-		kmp.Db = make(map[string][]pattern)
-	}
-
-	for _, str := range strs {
-		hasAdded := false
-		for _, addedPattern := range kmp.Db[dbKey] {
-			if addedPattern.str == str {
-				hasAdded = true
-				break
-			}
-		}
-		if hasAdded == true {
-			continue
-		}
-
-		var pat pattern
-		pat.str = str
-		kmp.Db[dbKey] = append(kmp.Db[dbKey], pat)
+	if nocaseMatch != nil && nocaseMatch[0] == true {
+		nocase = true
+		pattern = strings.ToLower(pattern)
 	}
 
-	return
+	patternLen := len(pattern)
+	return &Kmp{
+		pattern:     pattern,
+		patternLen:  patternLen,
+		next:        getNextTable(pattern, patternLen),
+		nocaseMatch: nocase}, nil
 }
 
-func (kmp *Kmp) Compile() error {
-	return nil
+func (kmp *Kmp) Match(matchStr string) {
+
 }
 
 func (kmp *Kmp) Show() {
-	fmt.Print(kmp)
+	fmt.Println(kmp)
 }
 
-func Speak() {
-	fmt.Println("hello")
+func getNextTable(pattern string, patternLen int) []int {
+	var next = make([]int, len(pattern)+1)
+
+	next[0] = 0
+	i := 1
+	prev := 0
+	for i < patternLen {
+		if pattern[i] == pattern[prev] {
+			prev += 1
+			next[i] = prev
+			i += 1
+		} else {
+			if prev > 0 {
+				prev = next[prev-1]
+			} else {
+				next[i] = prev
+				i++
+			}
+		}
+	}
+
+	for i = patternLen; i > 0; i-- {
+		next[i] = next[i-1]
+	}
+	next[0] = -1
+
+	return next[:patternLen]
 }

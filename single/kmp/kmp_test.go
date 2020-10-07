@@ -1,10 +1,10 @@
 package kmp
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestKmp(t *testing.T) {
-	var test Kmp
-	strs := []string{"http", "com"}
-	test.AddStringsToDb(strs, "url")
+	test, _ := Init("\\\\.;12114AGFSzzzz")
 	test.Show()
 }
