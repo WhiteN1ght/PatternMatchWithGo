@@ -16,7 +16,7 @@ type Kmp struct {
 func Init(pattern string, nocaseMatch ...bool) (*Kmp, error) {
 	var nocase bool
 	if pattern == "" {
-		return nil, errors.New("Can't match null string")
+		return nil, errors.New("[KMP] Can't match null string")
 	}
 	if nocaseMatch != nil && nocaseMatch[0] == true {
 		nocase = true
@@ -31,11 +31,43 @@ func Init(pattern string, nocaseMatch ...bool) (*Kmp, error) {
 		nocaseMatch: nocase}, nil
 }
 
-func (kmp *Kmp) Match(matchStr string) {
+func (kmp *Kmp) Match(text string) []int {
+	textLen := len(text)
+	patternLen := kmp.patternLen
+	matchIdxs := make([]int, 0)
 
+	if patternLen > textLen {
+		return []int{}
+	}
+
+	i := 0
+	j := 0
+	for i < textLen {
+		textChr := text[i]
+		if kmp.nocaseMatch && textChr >= 'A' && textChr <= 'Z' {
+			textChr += 'a' - 'A'
+		}
+
+		if j == patternLen-1 && textChr == kmp.pattern[j] {
+			matchIdxs = append(matchIdxs, i-(patternLen-1))
+			j = kmp.next[j]
+		}
+		if textChr == kmp.pattern[j] {
+			i++
+			j++
+		} else {
+			j = kmp.next[j]
+			if j == -1 {
+				i += 1
+				j += 1
+			}
+		}
+	}
+
+	return matchIdxs
 }
 
-func (kmp *Kmp) Show() {
+func (kmp *Kmp) ShowNext() {
 	fmt.Println(kmp)
 }
 
